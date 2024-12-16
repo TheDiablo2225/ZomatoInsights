@@ -110,7 +110,7 @@ def get_popular_restaurants(connection):
 
 # Main Streamlit app
 def main():
-    st.title("Database Management and Insights Tool")
+    st.title("Zomato Management and Insights Tool")
 
     # Database connection
     connection = create_connection()
