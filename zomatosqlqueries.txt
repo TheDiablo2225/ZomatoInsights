@@ -1,0 +1,118 @@
+
+1. Fetch all orders with their delivery time and estimated time:
+   SELECT order_id, delivery_time, estimated_time FROM orders;
+
+2. Get the total number of orders placed by each customer:
+   SELECT customer_id, COUNT(order_id) AS total_orders FROM orders GROUP BY customer_id;
+
+3. Get the peak ordering hours (most popular hours of the day):
+   SELECT HOUR(order_time) AS order_hour, COUNT(*) AS total_orders
+   FROM orders
+   GROUP BY order_hour
+   ORDER BY order_hour;
+
+4. Fetch all customers who have placed more than 5 orders:
+   SELECT customer_id, COUNT(order_id) AS total_orders
+   FROM orders
+   GROUP BY customer_id
+   HAVING total_orders > 5;
+
+5. Get the total amount spent by each customer:
+   SELECT customer_id, SUM(total_price) AS total_spent
+   FROM orders
+   GROUP BY customer_id;
+
+6. Fetch all deliveries where the delivery time is greater than the estimated time:
+   SELECT * FROM deliveries
+   WHERE delivery_time > estimated_time;
+
+7. Find the top 5 most popular restaurants based on total orders:
+   SELECT r.name, COUNT(o.order_id) AS total_orders
+   FROM restaurants r
+   JOIN orders o ON r.restaurant_id = o.restaurant_id
+   GROUP BY r.name
+   ORDER BY total_orders DESC
+   LIMIT 5;
+
+8. Get the items most frequently ordered by each customer:
+   SELECT customer_id, item_name, COUNT(*) AS frequency
+   FROM orders
+   JOIN order_items ON orders.order_id = order_items.order_id
+   GROUP BY customer_id, item_name
+   ORDER BY frequency DESC;
+
+9. Find orders with a delivery time delay greater than 15 minutes:
+   SELECT order_id, delivery_time, estimated_time, (delivery_time - estimated_time) AS delay
+   FROM orders
+   WHERE (delivery_time - estimated_time) > 15;
+
+10. Get the customers who have ordered from a specific restaurant (e.g., 'Pizza Hut'):
+    SELECT DISTINCT customer_id
+    FROM orders o
+    JOIN restaurants r ON o.restaurant_id = r.restaurant_id
+    WHERE r.name = 'Pizza Hut';
+
+11. Get the total number of deliveries and their average delay:
+    SELECT COUNT(*) AS total_deliveries, AVG(delivery_time - estimated_time) AS avg_delay
+    FROM deliveries;
+
+12. Find the restaurants with the highest number of deliveries (orders):
+    SELECT r.name, COUNT(o.order_id) AS total_orders
+    FROM restaurants r
+    JOIN orders o ON r.restaurant_id = o.restaurant_id
+    GROUP BY r.name
+    ORDER BY total_orders DESC;
+
+13. Get the details of the order with the longest delivery time delay:
+    SELECT order_id, delivery_time, estimated_time, (delivery_time - estimated_time) AS delay
+    FROM orders
+    ORDER BY delay DESC
+    LIMIT 1;
+
+14. Fetch the customers who have not placed any orders in the last 30 days:
+    SELECT customer_id
+    FROM customers
+    WHERE customer_id NOT IN (
+        SELECT DISTINCT customer_id
+        FROM orders
+        WHERE order_date > CURDATE() - INTERVAL 30 DAY
+    );
+
+15. Get the most ordered items for each restaurant:
+    SELECT r.name AS restaurant_name, oi.item_name, COUNT(oi.item_name) AS total_orders
+    FROM order_items oi
+    JOIN orders o ON oi.order_id = o.order_id
+    JOIN restaurants r ON o.restaurant_id = r.restaurant_id
+    GROUP BY r.name, oi.item_name
+    ORDER BY total_orders DESC;
+
+16. Get the average delivery delay for each restaurant:
+    SELECT r.name, AVG(d.delivery_time - d.estimated_time) AS avg_delay
+    FROM restaurants r
+    JOIN orders o ON r.restaurant_id = o.restaurant_id
+    JOIN deliveries d ON o.order_id = d.order_id
+    GROUP BY r.name;
+
+17. Get all orders for a specific customer (e.g., customer_id = 123):
+    SELECT * FROM orders
+    WHERE customer_id = 123;
+
+18. Find the items ordered by the most customers:
+    SELECT item_name, COUNT(DISTINCT customer_id) AS num_customers
+    FROM order_items oi
+    JOIN orders o ON oi.order_id = o.order_id
+    GROUP BY item_name
+    ORDER BY num_customers DESC;
+
+19. Get the average order value for each customer:
+    SELECT customer_id, AVG(total_price) AS avg_order_value
+    FROM orders
+    GROUP BY customer_id;
+
+20. Find the restaurants that have never had a delivery delay (i.e., where delivery time is equal to estimated time):
+    SELECT r.name
+    FROM restaurants r
+    JOIN orders o ON r.restaurant_id = o.restaurant_id
+    JOIN deliveries d ON o.order_id = d.order_id
+    WHERE d.delivery_time = d.estimated_time
+    GROUP BY r.name;
