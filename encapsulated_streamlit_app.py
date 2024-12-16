@@ -111,7 +111,7 @@ class ZomatoApp:
         return self.fetch_data(query)
 
     def main(self):
-        st.title("Database Management and Insights Tool")
+        st.title("Zomato Management and Insights Tool")
 
         # Database connection
         self.create_connection()
